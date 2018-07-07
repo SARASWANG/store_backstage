@@ -1,6 +1,6 @@
 # store_backstage
 
-> 商城的后台管理系统
+> 商城的后台管理系统, day1
 
 ## Build Setup
 
