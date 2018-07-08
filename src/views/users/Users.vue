@@ -16,6 +16,17 @@
         <el-button type="success" plain>添加用户</el-button>
       </el-col>
     </el-row>
+    <!-- 表格区域  stripe 斑马线样式-->
+    <el-table :data="list" border stripe style="width: 100%">
+      <el-table-column prop="username" label="姓名" width="180">
+      </el-table-column>
+      <el-table-column prop="email" label="邮箱" width="180">
+      </el-table-column>
+      <el-table-column prop="mobile" label="电话">
+      </el-table-column>
+      <el-table-column prop="mg_state" label="用户状态">
+      </el-table-column>
+    </el-table>
   </el-card>
 </template>
 
@@ -23,8 +34,36 @@
 export default {
   data() {
     return {
-      formData: ''
+      formData: '',
+      list: []
     };
+  },
+  created() {
+    this.loadList();
+  },
+  methods: {
+    // 用户列表加载函数
+    async loadList() {
+      // 1 获取token值
+      const token = sessionStorage.getItem('token');
+      // 2 在请求头中设置touken，一起发送过去
+      this.$http.defaults.headers.common['Authorization'] = token;
+      // 3 发送请求
+      const res = await this.$http.get('users?pagenum=1&pagesize=10');
+      console.log(res);
+      // 4 获取响应数据
+      const data = res.data;
+      // 5 meta中的msg 和 status
+      const { meta: { msg, status } } = data;
+      if (status === 200) {
+        // 6 获取数据，给list列表
+        const { data: { users } } = data;
+        this.list = users;
+      } else {
+        // 6 提示错误
+        this.$message.error(msg);
+      }
+    }
   }
 };
 </script>
@@ -34,7 +73,7 @@ export default {
   height: 100%;
 }
 .el-input.searchlist {
-    width: 380px;
-    margin: 20px 0;
-  }
+  width: 380px;
+  margin: 20px 0;
+}
 </style>
