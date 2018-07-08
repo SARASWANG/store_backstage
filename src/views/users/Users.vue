@@ -17,7 +17,7 @@
       </el-col>
     </el-row>
     <!-- 表格区域  stripe 斑马线样式-->
-    <el-table :data="list" border stripe style="width: 100%">
+    <el-table :data="list" border stripe style="width: 100%" v-loading="loading">
       <el-table-column prop="username" label="姓名" width="180">
       </el-table-column>
       <el-table-column prop="email" label="邮箱" width="180">
@@ -56,7 +56,8 @@ export default {
   data() {
     return {
       formData: '',
-      list: []
+      list: [],
+      loading: true
     };
   },
   created() {
@@ -65,6 +66,8 @@ export default {
   methods: {
     // 用户列表加载函数
     async loadList() {
+      // 在发送请求之前开始加载
+      this.loading = true;
       // 1 获取token值
       const token = sessionStorage.getItem('token');
       // 2 在请求头中设置touken，一起发送过去
@@ -72,6 +75,9 @@ export default {
       // 3 发送请求
       const res = await this.$http.get('users?pagenum=1&pagesize=10');
       console.log(res);
+      // 请求结束拿到数据后，结束加载
+      this.loading = false;
+
       // 4 获取响应数据
       const data = res.data;
       // 5 meta中的msg 和 status
