@@ -10,7 +10,8 @@
           <h2 class="middle">电商后台管理系统</h2>
         </el-col>
         <el-col :span="1">
-          <a href="#" class="logout">退出</a>
+          <!--  退出功能 -->
+          <a href="#" class="logout" @click.prevent="handlelogout">退出</a>
         </el-col>
       </el-row>
     </el-header>
@@ -34,6 +35,17 @@ export default {
       this.$router.push({ name: 'login' });
       return;
     };
+  },
+  methods: {
+    // 退出按钮的处理程序
+    handlelogout() {
+      // 1 清除session
+      sessionStorage.clear('token');
+      // 2 提示框
+      this.$message.success('退出成功');
+      // 3 跳转到登录页面
+      this.$router.push({ name: 'login' });
+    }
   }
 };
 </script>
