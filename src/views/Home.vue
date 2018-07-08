@@ -1,5 +1,6 @@
 <template>
   <el-container class="container">
+    <!-- 头部 栅格系统 -->
     <el-header class="header">
       <el-row>
         <el-col :span="4">
@@ -14,14 +15,27 @@
       </el-row>
     </el-header>
     <el-container class="container">
-      <el-aside class="aside" width="200px">Aside</el-aside>
+      <!-- 侧边栏 -->
+      <el-aside class="aside" width="200px">
+      </el-aside>
       <el-main class="main">Main</el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-export default {};
+export default {
+  // 在加载页面之前，先验证session是否存在
+  beforeCreate() {
+    const token = sessionStorage.getItem('token');
+    // 若session不存在，弹出警告框，并跳转到登录页面
+    if (!token) {
+      this.$message.warning('请先登录');
+      this.$router.push({ name: 'login' });
+      return;
+    };
+  }
+};
 </script>
 
 <style>
@@ -33,7 +47,8 @@ export default {};
   background-color: #b3c0d1;
   padding: 0;
 }
-.header .middle,.header .logout {
+.header .middle,
+.header .logout {
   text-align: center;
   line-height: 60px;
   color: #fff;

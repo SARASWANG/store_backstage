@@ -39,6 +39,8 @@ export default {
             const token = data.data.token;
             // 记录touken到sessionStorage中
             sessionStorage.setItem('token', token);
+            // 跳转到home首页
+            this.$router.push({name: 'home'});
             // 弹出提示框
             this.$message.success(msg);
           } else {
