@@ -8,6 +8,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 // 引入公共css样式
 import '@/assets/css/style.css';
+// 引入MyAxios
+import Myaxios from '@/plugins/myaxios';
+// 组册Axios插件
+Vue.use(Myaxios);
 
 Vue.use(ElementUI);
 
