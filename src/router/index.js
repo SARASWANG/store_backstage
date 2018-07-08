@@ -1,15 +1,16 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld';
+// 1 引入登录组件
+import Login from '@/views/login';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'login',
+      path: '/login',
+      component: Login
     }
   ]
 });
