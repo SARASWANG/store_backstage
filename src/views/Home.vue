@@ -92,7 +92,11 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main class="main">Main</el-main>
+      <!--  右侧展示区域 -->
+      <el-main class="main">
+        <!-- main的 路由出口 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
