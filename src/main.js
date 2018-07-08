@@ -10,12 +10,18 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/css/style.css';
 // 引入MyAxios
 import Myaxios from '@/plugins/myaxios';
+// 引入日期格式化组件
+import moment from 'moment';
 // 组册Axios插件
 Vue.use(Myaxios);
 
 Vue.use(ElementUI);
 
 Vue.config.productionTip = false;
+// 全局过滤器，格式化日期
+Vue.filter('fmtDate', (v, fmtString) => {
+  return moment(v).format(fmtString);
+});
 
 /* eslint-disable no-new */
 new Vue({

@@ -24,6 +24,12 @@
       </el-table-column>
       <el-table-column prop="mobile" label="电话">
       </el-table-column>
+      <!-- 添加一行日期状态 -->
+      <el-table-column prop="create_time" label="日期">
+        <template slot-scope="scope">
+          {{ scope.row.create_time | fmtDate('YYYY-MM-DD hh:mm:ss') }}
+        </template>
+      </el-table-column>
       <!-- 用户状态 -->
       <el-table-column label="用户状态">
         <!-- 增加一个template标签 把开关按钮包裹起来 -->
