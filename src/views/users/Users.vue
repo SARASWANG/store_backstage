@@ -24,7 +24,22 @@
       </el-table-column>
       <el-table-column prop="mobile" label="电话">
       </el-table-column>
-      <el-table-column prop="mg_state" label="用户状态">
+      <!-- 用户状态 -->
+      <el-table-column label="用户状态">
+        <!-- 增加一个template标签 把开关按钮包裹起来 -->
+        <template slot-scope="scope">
+          <!-- scope.row 就是当前绑定的数据对象 -->
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+          </el-switch>
+        </template>
+      </el-table-column>
+      <!-- 操作列 -->
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
+          <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+        </template>
       </el-table-column>
     </el-table>
   </el-card>
