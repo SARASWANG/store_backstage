@@ -48,7 +48,7 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
           <!-- 分配角色弹出框 -->
-          <el-button type="success" icon="el-icon-check" size="mini" plain @click="handledealrole(scope.row.id)"></el-button>
+          <el-button type="success" icon="el-icon-check" size="mini" plain @click="handledealrole(scope.row)"></el-button>
           <!-- scope.row 可以获取到这一整行里的所有数据 -->
           <el-button type="danger" icon="el-icon-delete" size="mini" plain @click="handleDelete(scope.row.id)"></el-button>
         </template>
@@ -104,13 +104,18 @@
   <!-- 分配角色弹出框 -->
     <el-dialog title="请选择" :visible.sync="DealuserdialogTableVisible">
       <el-form :model="form" label-width="100px">
-        <el-form-item label="用户名" disabled>
-          <el-input v-model="form.username"></el-input>
-        </el-form-item>
+        <!-- 1、显示用户名，可以在scope.row中获取整行的数据信息 -->
+        <el-form-item label="用户名" prop="username">{{ currentName }}</el-form-item>
         <el-form-item label="角色">
-          <el-select>
-            <el-option disabled label="请选择角色" value="-1"></el-option>
-            <!-- <el-option label="区域二" value="beijing"></el-option> -->
+          <!-- 3、select的currentRoleId（value）值===option的value值时（角色id），显示 -->
+          <el-select v-model="currentRoleId">
+            <el-option disabled label="请选择角色" :value="-1"></el-option>
+            <!-- 2、遍历查询到的所有角色信息数组，显示在option中 -->
+            <el-option
+            v-for="item in roles"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -159,7 +164,12 @@ export default {
         ]
       },
       // ----------分配角色弹框属性
-      DealuserdialogTableVisible: false
+      DealuserdialogTableVisible: false,
+      currentName: '',
+      // 当前用户的id
+      currentRoleId: -1,
+      // 所有的角色
+      roles: []
     };
   },
   created() {
@@ -277,9 +287,16 @@ export default {
       });
     },
     // 分配角色功能
-    handledealrole(id) {
-      console.log(1);
+    async handledealrole(data) {
+      this.currentName = data.username;
       this.DealuserdialogTableVisible = true;
+      // 1、先发送请求，获取所有的角色信息
+      const res = await this.$http.get('roles');
+      // 2、把获取的角色信息存入roles对象中
+      this.roles = res.data.data;
+      // 3、根据当前的用户id查询用户信息，获取其对应的角色rid
+      const res1 = await this.$http.get(`users/${data.id}`);
+      this.currentRoleId = res1.data.data.rid;
     }
   }
 };
