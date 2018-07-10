@@ -107,7 +107,7 @@
         <!-- 1、显示用户名，可以在scope.row中获取整行的数据信息 -->
         <el-form-item label="用户名" prop="username">{{ currentName }}</el-form-item>
         <el-form-item label="角色">
-          <!-- 3、select的currentRoleId（value）值===option的value值时（角色id），显示 -->
+          <!-- 3、select的currentRoleId（value）值 === option的value值时（角色id），显示 -->
           <el-select v-model="currentRoleId">
             <el-option disabled label="请选择角色" :value="-1"></el-option>
             <!-- 2、遍历查询到的所有角色信息数组，显示在option中 -->
@@ -121,8 +121,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <!--  2、点击确认添加，发送请求， -->
-        <el-button type="primary">确 定</el-button>
+        <!--  2、点击确认添加,确认分配角色 -->
+        <el-button type="primary" @click="handleSetRole">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -166,8 +166,10 @@ export default {
       // ----------分配角色弹框属性
       DealuserdialogTableVisible: false,
       currentName: '',
-      // 当前用户的id
+      // 当前角色的id
       currentRoleId: -1,
+      // 获取用户id
+      currentUsersId: -1,
       // 所有的角色
       roles: []
     };
@@ -288,7 +290,10 @@ export default {
     },
     // 分配角色功能
     async handledealrole(data) {
+      // 记录当前的用户名
       this.currentName = data.username;
+      // 记录当前的用户id
+      this.currentUsersId = data.id;
       this.DealuserdialogTableVisible = true;
       // 1、先发送请求，获取所有的角色信息
       const res = await this.$http.get('roles');
@@ -296,7 +301,29 @@ export default {
       this.roles = res.data.data;
       // 3、根据当前的用户id查询用户信息，获取其对应的角色rid
       const res1 = await this.$http.get(`users/${data.id}`);
+      // 获取角色id
       this.currentRoleId = res1.data.data.rid;
+    },
+    // 分配角色
+    async handleSetRole() {
+      const res = await this.$http.put(`users/${this.currentUsersId}/role`, {
+        rid: this.currentRoleId
+      });
+      console.log(res);
+      const { meta: { msg, status } } = res.data;
+      console.log(status);
+      if (status === 200) {
+        // 关闭弹出框
+        this.DealuserdialogTableVisible = false;
+        // 提示信息
+        this.$message.success(msg);
+        // 角色分配完以后为什么要重置数据------------？？？？
+        this.currentName = '';
+        this.currentRoleId = -1;
+        this.currentUsersId = -1;
+      } else {
+        this.$message.error(msg);
+      }
     }
   }
 };
