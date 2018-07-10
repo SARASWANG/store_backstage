@@ -11,7 +11,8 @@
     <el-row>
       <el-col :span="24">
         <el-input clearable placeholder="请输入内容" v-model="formData" class="input-with-select searchlist">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+          <!-- 搜索功能 -->
+          <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
         </el-input>
         <!-- 1、点击添加用户--就弹出层 -->
         <el-button type="success" plain @click="AdduserdialogTableVisible=true">添加用户</el-button>
@@ -150,8 +151,8 @@ export default {
       const token = sessionStorage.getItem('token');
       // 2 在请求头中设置touken，一起发送过去
       this.$http.defaults.headers.common['Authorization'] = token;
-      // 3 发送请求
-      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+      // 3 发送请求,携带参数 quer是查询的参数
+      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.formData}`);
       console.log(res);
       // 请求结束拿到数据后，结束加载
       this.loading = false;
@@ -217,6 +218,11 @@ export default {
           this.$message.error(msg);
         }
       });
+    },
+    // 搜索功能
+    handleSearch() {
+      // 加载带上参数查询的list
+      this.loadList();
     }
   }
 };
