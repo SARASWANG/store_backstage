@@ -13,7 +13,8 @@
         <el-input clearable placeholder="请输入内容" v-model="formData" class="input-with-select searchlist">
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
-        <el-button type="success" plain @click="handleAdd">添加用户</el-button>
+        <!-- 1、点击添加用户--就弹出层 -->
+        <el-button type="success" plain @click="AdduserdialogTableVisible=true">添加用户</el-button>
       </el-col>
     </el-row>
     <!-- 表格区域  stripe 斑马线样式-->
@@ -68,6 +69,28 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
+    <!-- 添加用户弹出框 -->
+    <el-dialog title="添加用户" :visible.sync="AdduserdialogTableVisible">
+      <el-form :model="form">
+        <el-form-item label="用户名" :label-width="formLabelWidth">
+          <el-input v-model="form.username" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="form.password" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth">
+          <el-input v-model="form.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" :label-width="formLabelWidth">
+          <el-input v-model="form.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <!--  2、点击确认添加，发送请求， -->
+        <el-button type="primary" @click="handleAdduser">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -83,7 +106,16 @@ export default {
       // 当前页
       pagenum: 1,
       // 总条数
-      total: 0
+      total: 0,
+      // 添加用户弹出框属性
+      AdduserdialogTableVisible: false,
+      formLabelWidth: '120px',
+      form: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
+      }
     };
   },
   created() {
@@ -119,10 +151,6 @@ export default {
         this.$message.error(msg);
       }
     },
-    // 点击添加按钮处理程序
-    handleAdd() {
-      this.$router.push({name: 'adduser'});
-    },
     // 分页处理程序
     // 每页条数改变的时候
     handleSizeChange(val) {
@@ -139,6 +167,27 @@ export default {
       this.pagenum = val;
       // 根据当前页，加载用户列表
       this.loadList();
+    },
+    // 3、点击添加按钮处理程序
+    async handleAdduser() {
+      // 1、发送请求,把对应的表单数据传递过去
+      var addres = await this.$http.post('users', this.form);
+      // 2、获取响应的数据
+      const {meta: {msg, status}} = addres.data;
+      if (status === 201) {
+        // 3、提示信息
+        this.$message.success(msg);
+        // 4、关闭弹出框
+        this.AdduserdialogTableVisible = false;
+        // 5、重新加载数据
+        this.loadList();
+        // 6、注意：清空列表-------遍历对象，把每一项都至为空
+        for (let key in this.form) {
+          this.form[key] = '';
+        }
+      } else {
+        this.$message.error(msg);
+      }
     }
   }
 };

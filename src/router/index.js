@@ -6,9 +6,6 @@ import Login from '@/views/login';
 import Home from '@/views/Home';
 // 3 home_ 用户列表组件
 import Users from '@/views/users/Users';
-// 4 导入添加用户的组件
-import Adduser from '@/views/users/Adduser';
-
 Vue.use(Router);
 
 export default new Router({
@@ -31,12 +28,6 @@ export default new Router({
           name: 'users',
           path: '/users',
           component: Users
-        },
-        // 添加用户的路由
-        {
-          name: 'adduser',
-          path: '/users/add',
-          component: Adduser
         }
       ]
     }
