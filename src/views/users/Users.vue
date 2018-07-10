@@ -47,7 +47,8 @@
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
-          <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
+          <!-- 分配角色弹出框 -->
+          <el-button type="success" icon="el-icon-check" size="mini" plain @click="handledealrole(scope.row.id)"></el-button>
           <!-- scope.row 可以获取到这一整行里的所有数据 -->
           <el-button type="danger" icon="el-icon-delete" size="mini" plain @click="handleDelete(scope.row.id)"></el-button>
         </template>
@@ -100,6 +101,25 @@
         <el-button type="primary" @click="handleAdduser">确 定</el-button>
       </div>
     </el-dialog>
+  <!-- 分配角色弹出框 -->
+    <el-dialog title="请选择" :visible.sync="DealuserdialogTableVisible">
+      <el-form :model="form" label-width="100px">
+        <el-form-item label="用户名" disabled>
+          <el-input v-model="form.username"></el-input>
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-select>
+            <el-option disabled label="请选择角色" value="-1"></el-option>
+            <!-- <el-option label="区域二" value="beijing"></el-option> -->
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <!--  2、点击确认添加，发送请求， -->
+        <el-button type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -137,7 +157,9 @@ export default {
           { required: true, message: '请输入密码', trigger: 'change' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ]
-      }
+      },
+      // ----------分配角色弹框属性
+      DealuserdialogTableVisible: false
     };
   },
   created() {
@@ -253,6 +275,11 @@ export default {
           message: '已取消删除'
         });
       });
+    },
+    // 分配角色功能
+    handledealrole(id) {
+      console.log(1);
+      this.DealuserdialogTableVisible = true;
     }
   }
 };
