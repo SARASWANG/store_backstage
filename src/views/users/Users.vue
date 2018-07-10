@@ -63,7 +63,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pagenum"
-      :page-sizes="[4, 6, 8, 10]"
+      :page-sizes="[4, 6, 2, 8]"
       :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
@@ -79,9 +79,9 @@ export default {
       list: [],
       loading: true,
       // 每页显示多少条
-      pagesize: 3,
+      pagesize: 4,
       // 当前页
-      pagenum: 2,
+      pagenum: 1,
       // 总条数
       total: 0
     };
@@ -112,6 +112,7 @@ export default {
         // 6 获取数据，给list列表
         const { data: {users, total} } = data;
         this.list = users;
+        // 获取后端返回的总页数
         this.total = total;
       } else {
         // 6 提示错误
@@ -123,12 +124,21 @@ export default {
       this.$router.push({name: 'adduser'});
     },
     // 分页处理程序
-    // 当前页数改变的时候处理程序
+    // 每页条数改变的时候
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
+      // 获取当前页，
+      this.pagesize = val;
+      // 根据当前页，加载用户列表
+      this.loadList();
     },
+    // 当前页数改变的时候
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
+      // 获取当前页，
+      this.pagenum = val;
+      // 根据当前页，加载用户列表
+      this.loadList();
     }
   }
 };
