@@ -48,7 +48,8 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
           <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+          <!-- scope.row 可以获取到这一整行里的所有数据 -->
+          <el-button type="danger" icon="el-icon-delete" size="mini" plain @click="handleDelete(scope.row.id)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -223,6 +224,35 @@ export default {
     handleSearch() {
       // 加载带上参数查询的list
       this.loadList();
+    },
+    // 删除功能,接受对应的id值
+    async handleDelete(id) {
+      // 弹出提示框，询问是否删除
+      this.$confirm('您确定要删除该用户吗?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // 确认删除,发请求
+        const res = await this.$http.delete(`users/${id}`);
+        const { meta: { status, msg } } = res.data;
+        // 删除成功，重新加载数据
+        if (status === 200) {
+          this.$message({
+            type: 'success',
+            message: msg
+          });
+          this.pagenum = 1;
+          this.loadList();
+        } else {
+          this.$message.error(msg);
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 };
