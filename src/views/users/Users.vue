@@ -70,12 +70,19 @@
       :total="total">
     </el-pagination>
     <!-- 添加用户弹出框 -->
+    <!-- 验证表单：
+    1、给form表单添加ref属性，获取form的dom对象
+    2、给增加:rules,验证表单规则
+    3、给需要验证的input增加prop属性 -->
     <el-dialog title="添加用户" :visible.sync="AdduserdialogTableVisible">
-      <el-form :model="form">
-        <el-form-item label="用户名" :label-width="formLabelWidth">
+      <el-form
+        :model="form"
+        :rules="Formrules"
+        ref="addForm">
+        <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
           <el-input v-model="form.username" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth">
+        <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
           <el-input type="password" v-model="form.password" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth">
@@ -115,6 +122,19 @@ export default {
         password: '',
         email: '',
         mobile: ''
+      },
+      // ----------验证表单规则
+      Formrules: {
+        // 用户名的验证规则
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+        ],
+        // 密码的验证规则
+        password: [
+          { required: true, message: '请输入密码', trigger: 'change' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ]
       }
     };
   },
@@ -168,26 +188,35 @@ export default {
       // 根据当前页，加载用户列表
       this.loadList();
     },
-    // 3、点击添加按钮处理程序
+    // 3、点击添加按钮弹出框中的确认按钮的处理程序
     async handleAdduser() {
-      // 1、发送请求,把对应的表单数据传递过去
-      var addres = await this.$http.post('users', this.form);
-      // 2、获取响应的数据
-      const {meta: {msg, status}} = addres.data;
-      if (status === 201) {
-        // 3、提示信息
-        this.$message.success(msg);
-        // 4、关闭弹出框
-        this.AdduserdialogTableVisible = false;
-        // 5、重新加载数据
-        this.loadList();
-        // 6、注意：清空列表-------遍历对象，把每一项都至为空
-        for (let key in this.form) {
-          this.form[key] = '';
+      // 验证表单，表单的 DOM对象 this.$refs.myform
+      this.$refs.addForm.validate(async (valid) => {
+        // 当输入的信息不完整时，点击确认按钮，提交表单时，提示输入完整内容
+        if (!valid) {
+          // console.log(valid);  // 返回一个布尔值，添加成功返回true
+          return this.$message.error('请输入完整的内容');
+        };
+        // 验证成功后，发送请求
+        // 1、发送请求,把对应的表单数据传递过去
+        var addres = await this.$http.post('users', this.form);
+        // 2、获取响应的数据
+        const {meta: {msg, status}} = addres.data;
+        if (status === 201) {
+          // 3、提示信息
+          this.$message.success(msg);
+          // 4、关闭弹出框
+          this.AdduserdialogTableVisible = false;
+          // 5、重新加载数据
+          this.loadList();
+          // 6、注意：清空列表-------遍历对象，把每一项都至为空
+          for (let key in this.form) {
+            this.form[key] = '';
+          }
+        } else {
+          this.$message.error(msg);
         }
-      } else {
-        this.$message.error(msg);
-      }
+      });
     }
   }
 };
