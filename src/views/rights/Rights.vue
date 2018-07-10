@@ -32,6 +32,12 @@
       <el-table-column
         prop="level"
         label="层级">
+        <!-- 根据scope.row中的数据判断level的值，来显示对应的层级 -->
+        <template slot-scope="scope">
+          <span v-if="scope.row.level === '0'">一级</span>
+          <span v-else-if="scope.row.level === '1'">二级</span>
+          <span v-else-if="scope.row.level === '2'">三级</span>
+        </template>
       </el-table-column>
     </el-table>
 </el-card>
@@ -66,6 +72,8 @@ export default {
 <style>
 .box-card {
     height: 100%;
+    /* 超出的列表滚动条展示出来 */
+    overflow: auto;
   }
 .rightsTable {
   margin-top: 20px;
