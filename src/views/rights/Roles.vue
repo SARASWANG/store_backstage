@@ -11,6 +11,13 @@
   </el-row>
   <!-- 表格 -->
   <el-table :data="roleslist" style="width: 100%" border stripe v-loading="loading">
+    <!-- 展开列 -->
+    <el-table-column type="expand">
+      <template slot-scope="scope">
+        <!-- 标签 closrable属性表示标签可以移除 -->
+        <el-tag type="success" closable @close="handleClose">主管</el-tag>
+      </template>
+    </el-table-column>
     <!-- index 索引自增长 -->
     <el-table-column
       type="index"
@@ -68,6 +75,10 @@ export default {
       } else {
         this.$message.error(msg);
       }
+    },
+    // 关闭标签按钮的处理程序
+    handleClose(tag) {
+      console.log('close');
     }
   }
 };
