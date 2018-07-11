@@ -12,6 +12,10 @@ import '@/assets/css/style.css';
 import Myaxios from '@/plugins/myaxios';
 // 引入日期格式化组件
 import moment from 'moment';
+// 引入面包屑--全局组件
+import MyBreadcrumb from '@/components/MyBreadcrumb';
+// 注册全局组件
+Vue.component(MyBreadcrumb.name, MyBreadcrumb);
 // 组册Axios插件
 Vue.use(Myaxios);
 

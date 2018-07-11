@@ -2,11 +2,12 @@
   <!-- 最外层卡片样式-->
   <el-card class="box-card">
     <!-- 面包屑 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
+    <my-breadcrumb level1="用户管理" level2="用户列表"></my-breadcrumb>
+    <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    </el-breadcrumb> -->
     <!-- 搜索区域 -->
     <el-row>
       <el-col :span="24">
