@@ -40,6 +40,24 @@ export default {
     return {
       roleslist: []
     };
+  },
+  created() {
+    this.loadRolesList();
+  },
+  methods: {
+    // 加载角色列表
+    async loadRolesList() {
+      // res是response，获取的是响应对象，---> { data: {...}, status }
+      const { data: resData } = await this.$http.get('roles');
+      // res.data 中的数据才是后端返回的数据 { data: {...} ,meta: {msg,status} }
+      const { data, meta: { msg, status } } = resData;
+      if (status === 200) {
+        // 获取数据成功
+        this.roleslist = data;
+      } else {
+        this.$message.error(msg);
+      }
+    }
   }
 };
 </script>
