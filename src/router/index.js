@@ -8,6 +8,8 @@ import Home from '@/views/Home';
 import Users from '@/views/users/Users';
 // 4 rights_权限管理列表
 import Rights from '@/views/rights/Rights';
+// 5 roles_角色管理列表
+import Roles from '@/views/rights/Roles';
 Vue.use(Router);
 
 export default new Router({
@@ -36,6 +38,12 @@ export default new Router({
           name: 'rights',
           path: '/rights',
           component: Rights
+        },
+        // 权限列表
+        {
+          name: 'roles',
+          path: '/roles',
+          component: Roles
         }
       ]
     }
