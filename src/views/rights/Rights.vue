@@ -70,11 +70,6 @@ export default {
 </script>
 
 <style>
-.box-card {
-    height: 100%;
-    /* 超出的列表滚动条展示出来 */
-    overflow: auto;
-  }
 .rightsTable {
   margin-top: 20px;
 }

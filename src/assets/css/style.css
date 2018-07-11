@@ -16,3 +16,9 @@ h1,h2,h3,h4,h5,h6,p {
 a {
   text-decoration: none;
 }
+/* 设置卡片的样式 */
+.box-card {
+  height: 100%;
+  /* 超出的列表滚动条展示出来 */
+  overflow: auto;
+}

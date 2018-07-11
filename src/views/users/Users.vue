@@ -330,9 +330,6 @@ export default {
 </script>
 
 <style>
-.box-card {
-  height: 100%;
-}
 .el-input.searchlist {
   width: 380px;
   margin: 20px 0;
