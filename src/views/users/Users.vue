@@ -183,9 +183,9 @@ export default {
       // 在发送请求之前开始加载
       this.loading = true;
       // 1 获取token值
-      const token = sessionStorage.getItem('token');
+      // const token = sessionStorage.getItem('token');
       // 2 在请求头中设置touken，一起发送过去
-      this.$http.defaults.headers.common['Authorization'] = token;
+      // this.$http.defaults.headers.common['Authorization'] = token;
       // 3 发送请求,携带参数 quer是查询的参数
       const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.formData}`);
       console.log(res);

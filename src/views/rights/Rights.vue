@@ -58,11 +58,11 @@ export default {
     // 查询角色列表
     async loadRightsList() {
       // 发送请求之前，获取token
-      const token = sessionStorage.getItem('token');
+      // const token = sessionStorage.getItem('token');
       // 在请求头中设置token
-      this.$http.defaults.headers.common['Authorization'] = token;
+      // this.$http.defaults.headers.common['Authorization'] = token;
       const res = await this.$http.get(`rights/list`);
-      console.log(res);
+      // console.log(res);
       this.rightslist = res.data.data;
     }
   }
