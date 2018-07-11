@@ -10,7 +10,7 @@
     </el-col>
   </el-row>
   <!-- 表格 -->
-  <el-table :data="roleslist" style="width: 100%" border stripe >
+  <el-table :data="roleslist" style="width: 100%" border stripe v-loading="loading">
     <!-- index 索引自增长 -->
     <el-table-column
       type="index"
@@ -29,6 +29,12 @@
     <el-table-column
       prop="address"
       label="操作">
+      <!-- 操作按钮 -->
+      <template slot-scope="scope">
+        <el-button plain size="mini" type="primary" icon="el-icon-edit" ></el-button>
+        <el-button plain size="mini" type="danger" icon="el-icon-delete" ></el-button>
+        <el-button plain size="mini" type="success" icon="el-icon-check" ></el-button>
+      </template>
     </el-table-column>
   </el-table>
  </el-card>
@@ -38,7 +44,8 @@
 export default {
   data() {
     return {
-      roleslist: []
+      roleslist: [],
+      loading: true
     };
   },
   created() {
@@ -47,8 +54,12 @@ export default {
   methods: {
     // 加载角色列表
     async loadRolesList() {
+      // 发送请求的时候开始显示加载遮罩
+      this.loading = true;
       // res是response，获取的是响应对象，---> { data: {...}, status }
       const { data: resData } = await this.$http.get('roles');
+      // 当发送完请求后，结束加载效果
+      this.loading = false;
       // res.data 中的数据才是后端返回的数据 { data: {...} ,meta: {msg,status} }
       const { data, meta: { msg, status } } = resData;
       if (status === 200) {
