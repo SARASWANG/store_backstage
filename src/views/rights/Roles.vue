@@ -72,10 +72,22 @@
       <template slot-scope="scope">
         <el-button plain size="mini" type="primary" icon="el-icon-edit" ></el-button>
         <el-button plain size="mini" type="danger" icon="el-icon-delete" ></el-button>
-        <el-button plain size="mini" type="success" icon="el-icon-check" ></el-button>
+        <el-button plain size="mini" type="success" icon="el-icon-check" @click="dialogVisible=true"></el-button>
       </template>
     </el-table-column>
   </el-table>
+  <!-- 分配权限的对话框 -->
+  <el-dialog
+  title="分配权限"
+  :visible.sync="dialogVisible"
+  width="30%"
+  :before-close="handleClose">
+    <!-- tree -->
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+  </el-dialog>
  </el-card>
 </template>
 
@@ -85,7 +97,9 @@ export default {
     return {
       // 角色信息列表
       roleslist: [],
-      loading: true
+      loading: true,
+      // 对话框
+      dialogVisible: false
     };
   },
   created() {
@@ -124,6 +138,7 @@ export default {
         this.$message.erroe(msg);
       }
     }
+    // 角色分配
   }
 };
 </script>
