@@ -10,6 +10,8 @@ import Users from '@/views/users/Users';
 import Rights from '@/views/rights/Rights';
 // 5 roles_角色管理列表
 import Roles from '@/views/rights/Roles';
+// 6 引入商品分类组件
+import Category from '@/views/goods/Category';
 Vue.use(Router);
 
 export default new Router({
@@ -44,6 +46,12 @@ export default new Router({
           name: 'roles',
           path: '/roles',
           component: Roles
+        },
+        // 商品分类
+        {
+          name: 'category',
+          path: '/categories',
+          component: Category
         }
       ]
     }

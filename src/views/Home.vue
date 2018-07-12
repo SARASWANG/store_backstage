@@ -32,12 +32,13 @@
               <i class="el-icon-location"></i>
               <span>{{ item.authName }}</span>
             </template>
+            <!-- 二级菜单 -->
             <el-menu-item
               v-for="item1 in item.children"
               :key="item1.id"
               :index="'/' + item1.path">
               <i class="el-icon-menu"></i>
-              {{ item.authName }}
+              {{ item1.authName }}
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -76,7 +77,7 @@ export default {
     async loadData() {
       const { data: resData } = await this.$http.get('menus');
 
-      const { data, meta: { status, msg } } = resData;
+      const { data, meta: { status } } = resData;
       if (status === 200) {
         this.menus = data;
       }
