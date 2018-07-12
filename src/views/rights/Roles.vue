@@ -19,14 +19,14 @@
           <!-- 一级权限 循环一行-->
           <el-row v-for="item1 in scope.row.children" :key="item1.id" class="row1">
             <el-col :span="4">
-              <!-- 关闭tag时间，把角色id和对应的权限id传递给函数 -->
-              <el-tag type="success" closable @close="handleClose(scope.row.id,item1.id)">{{item1.authName}}</el-tag>
+              <!-- 关闭tag时间，把角色对象和对应的权限id传递给函数 -->
+              <el-tag type="success" closable @close="handleClose(scope.row,item1.id)">{{item1.authName}}</el-tag>
             </el-col>
             <el-col :span="20">
               <!-- 二级权限 循环一行-->
               <el-row v-for="item2 in item1.children" :key="item2.id" class="row2">
                 <el-col :span="4">
-                  <el-tag type="error" closable @close="handleClose(scope.row.id,item2.id)">{{ item2.authName }}</el-tag>
+                  <el-tag type="error" closable @close="handleClose(scope.row,item2.id)">{{ item2.authName }}</el-tag>
                 </el-col>
                 <!-- 三级权限 循环每一个tag标签-->
                 <el-col :span="20">
@@ -36,7 +36,7 @@
                   v-for="item3 in item2.children"
                   :key="item3.id"
                   class="tag"
-                  @close="handleClose(scope.row.id,item3.id)"
+                  @close="handleClose(scope.row,item3.id)"
                   >
                   {{ item3.authName }}
                   </el-tag>
@@ -111,13 +111,15 @@ export default {
       }
     },
     // 关闭标签按钮的处理程序(删除权限)
-    async handleClose(roleId, rightId) {
-      const { data: resData } = await this.$http.delete(`roles/${roleId}/rights/${rightId}`);
-      const { meta: { msg, status } } = resData;
+    // role:角色对象，rightId：权限id
+    async handleClose(role, rightId) {
+      const { data: resData } = await this.$http.delete(`roles/${role.id}/rights/${rightId}`);
+      const { data, meta: { msg, status } } = resData;
       if (status === 200) {
         this.$message.success(msg);
-        // 从新加载整个list，体验不好
-        this.loadRolesList();
+        // 后端返回的数据是当前的角色拥有的权限，需要的是从新绑定角色的children
+        // 因为数据是双向绑定，所有可以实现局部刷新
+        role.children = data;
       } else {
         this.$message.erroe(msg);
       }
