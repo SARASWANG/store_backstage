@@ -42,6 +42,10 @@
               </el-row>
             </el-col>
           </el-row>
+          <!-- 没有权限 -->
+          <el-row v-if="scope.row.children.length === 0">
+            <el-col :span="24">没有权限</el-col>
+          </el-row>
       </template>
     </el-table-column>
     <!-- index 索引自增长 -->
