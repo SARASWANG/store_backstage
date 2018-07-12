@@ -72,7 +72,7 @@
       <template slot-scope="scope">
         <el-button plain size="mini" type="primary" icon="el-icon-edit" ></el-button>
         <el-button plain size="mini" type="danger" icon="el-icon-delete" ></el-button>
-        <el-button plain size="mini" type="success" icon="el-icon-check" @click="dialogVisible=true"></el-button>
+        <el-button plain size="mini" type="success" icon="el-icon-check" @click="handleshowdialogVisible"></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -82,7 +82,16 @@
   :visible.sync="dialogVisible"
   width="30%"
   :before-close="handleClose">
-    <!-- tree -->
+    <!-- tree
+      data：提供数据
+      props：配置数据中显示的属性 -->
+    <el-tree
+    :data="treedata"
+    :props="defaultProps"
+    show-checkbox
+    default-expand-all
+    @node-click="handleNodeClick">
+    </el-tree>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
       <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -99,7 +108,14 @@ export default {
       roleslist: [],
       loading: true,
       // 对话框
-      dialogVisible: false
+      dialogVisible: false,
+      // tree配置，要显示的数据
+      treedata: [],
+      // 配置要展示 数据中的哪个属性
+      defaultProps: {
+        children: 'children',
+        label: 'authName'
+      }
     };
   },
   created() {
@@ -137,8 +153,20 @@ export default {
       } else {
         this.$message.erroe(msg);
       }
+    },
+    // 点击tree节点操作
+    handleNodeClick() {
+
+    },
+    // 点击分配权限按钮，加载所有的权限
+    async handleshowdialogVisible() {
+      this.dialogVisible = true;
+      const { data: resdata } = await this.$http.get(`rights/tree`);
+      // 获取后端返回的数据
+      const { data } = resdata;
+      console.log(data);
+      this.treedata = data;
     }
-    // 角色分配
   }
 };
 </script>
