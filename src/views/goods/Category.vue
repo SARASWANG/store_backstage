@@ -42,6 +42,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page.sync="pagenum"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="pagesize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </el-card>
 </template>
 
@@ -49,18 +59,37 @@
 export default {
   data() {
     return {
-      list: []
+      list: [],
+      // 分页数据
+      pagenum: 1,
+      pagesize: 5,
+      total: 0
     };
   },
   created() {
     this.loadData();
   },
   methods: {
+    // 加载列表数据
     async loadData() {
-      const { data: resData } = await this.$http.get('categories?type=1');
-
-      const { data } = resData;
-      this.list = data;
+      // const { data: resData } = await this.$http.get('categories?type=1');
+      const { data: resData } = await this.$http.get(`categories?type=3&pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+      console.log(resData);
+      const { data: { result, total } } = resData;
+      this.list = result;
+      // 获取总条数
+      this.total = total;
+    },
+    // 分页方法
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.loadData();
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      this.pagenum = val;
+      this.loadData();
+      console.log(`当前页: ${val}`);
     }
   }
 
