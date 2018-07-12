@@ -15,7 +15,33 @@
     <el-table-column type="expand">
       <template slot-scope="scope">
         <!-- 标签 closrable属性表示标签可以移除 -->
-        <el-tag type="success" closable @close="handleClose">主管</el-tag>
+        <!-- scope.row中可以获取本行的角色信息 -->
+          <!-- 一级权限 循环一行-->
+          <el-row v-for="item1 in scope.row.children" :key="item1.id" class="row1">
+            <el-col :span="4">
+              <el-tag type="success" closable @close="handleClose">{{item1.authName}}</el-tag>
+            </el-col>
+            <el-col :span="20">
+              <!-- 二级权限 循环一行-->
+              <el-row v-for="item2 in item1.children" :key="item2.id" class="row2">
+                <el-col :span="4">
+                  <el-tag type="error" closable @click="handleClose">{{ item2.authName }}</el-tag>
+                </el-col>
+                <!-- 三级权限 循环每一个tag标签-->
+                <el-col :span="20">
+                  <el-tag
+                  type="warning"
+                  closable
+                  @click="handleClose"
+                  v-for="item3 in item2.children"
+                  :key="item3.id"
+                  class="tag">
+                  {{ item3.authName }}
+                  </el-tag>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
       </template>
     </el-table-column>
     <!-- index 索引自增长 -->
@@ -51,6 +77,7 @@
 export default {
   data() {
     return {
+      // 角色信息列表
       roleslist: [],
       loading: true
     };
@@ -61,16 +88,17 @@ export default {
   methods: {
     // 加载角色列表
     async loadRolesList() {
-      // 发送请求的时候开始显示加载遮罩
+      // 1、发送请求的时候开始显示加载遮罩
       this.loading = true;
-      // res是response，获取的是响应对象，---> { data: {...}, status }
+      // 2、res是response，获取的是响应对象，---> { data: {...}, status }
       const { data: resData } = await this.$http.get('roles');
-      // 当发送完请求后，结束加载效果
+      console.log(resData);
+      // 3、当发送完请求后，结束加载效果
       this.loading = false;
       // res.data 中的数据才是后端返回的数据 { data: {...} ,meta: {msg,status} }
       const { data, meta: { msg, status } } = resData;
       if (status === 200) {
-        // 获取数据成功
+        // 获取数据成功，
         this.roleslist = data;
       } else {
         this.$message.error(msg);
@@ -87,5 +115,14 @@ export default {
 <style>
 .rolesaddbtn {
   margin: 20px 0;
+}
+.row1 {
+  margin-bottom: 15px;
+}
+.row2 {
+  margin: 1px;
+}
+.tag {
+  margin: 0 5px 5px;
 }
 </style>
