@@ -92,6 +92,7 @@
       当要使用default-expanded-keys和default-checked-keys必须先设置node-key
       default-checked-keys 设置默认选中的节点 -->
     <el-tree
+    ref="tree"
     :data="treedata"
     :props="defaultProps"
     show-checkbox
@@ -102,7 +103,7 @@
     </el-tree>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="handleSetRights">确 定</el-button>
     </span>
   </el-dialog>
  </el-card>
@@ -126,8 +127,10 @@ export default {
         children: 'children',
         label: 'authName'
       },
-      // 获取要选择的节点
-      checkedList: []
+      // 获取要选择的节点-----------难点
+      checkedList: [],
+      // 记录当前修改的角色id-----------难点
+      currentRoleId: -1
     };
   },
   created() {
@@ -183,12 +186,11 @@ export default {
     // 点击按钮显示分配权限的对话框
     async handleshowrightdialog(role) {
       this.dialogVisible = true;
+      // 记录角色id，分配权限的时候使用-----------难点
+      this.currentRoleId = role.id;
       // 获取当前角色拥有的权限id
       // 声明数组存放权限id(只存放第三级的就行)
       const rightArr = [];
-      // for(var i = 0; i < role.children.length; i++) {
-      //   rightArr.push( role.children[i].id);
-      // }
       // 遍历一级权限
       role.children.forEach((item1) => {
         // 遍历二级权限
@@ -200,7 +202,36 @@ export default {
         });
       });
       this.checkedList = rightArr;
+    },
+    // 点击dialog的确认按钮，分配权限
+    // 思路
+    // 点击对话框确认按钮时，获取tree的所有节点，发送请求，实现角色授权
+    // 难点： 收集tree的节点，在上一步骤中记录角色id，这一步发送请求时使用。
+    async handleSetRights() {
+      // 获取到被选中的节点的id-----------难点
+      const checkedKeys = this.$refs.tree.getCheckedKeys();
+      // 获取到半选的节点的id-----------难点
+      const halfCheckedKeys = this.$refs.tree.getHalfCheckedKeys();
+      // 把获取到的所有节点展开，放入一个数组中-----------难点
+      const newArray = [...checkedKeys, ...halfCheckedKeys];
+      // 发送请求，分配权限
+      const { data: resData } = await this.$http.post(`roles/${this.currentRoleId}/rights`, {
+        rids: newArray.join(',')
+      });
+      const { meta: { status, msg } } = resData;
+      if (status === 200) {
+        // 分配成功
+        // 关闭对话框
+        this.dialogVisible = false;
+        // 提示成功
+        this.$message.success(msg);
+        // 重新加载数据
+        this.loadRolesList();
+      } else {
+        this.$message.error(msg);
+      }
     }
+
   }
 };
 </script>
