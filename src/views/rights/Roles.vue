@@ -72,24 +72,32 @@
       <template slot-scope="scope">
         <el-button plain size="mini" type="primary" icon="el-icon-edit" ></el-button>
         <el-button plain size="mini" type="danger" icon="el-icon-delete" ></el-button>
-        <el-button plain size="mini" type="success" icon="el-icon-check" @click="handleshowdialogVisible"></el-button>
+        <!-- 点击分配权限，把本行的角色对象传递给处理函数 -->
+        <el-button plain size="mini" type="success" icon="el-icon-check" @click="handleshowrightdialog(scope.row)"></el-button>
       </template>
     </el-table-column>
   </el-table>
   <!-- 分配权限的对话框 -->
   <el-dialog
   title="分配权限"
+  v-loading="loadingTree"
+  @open="handleOpenDialog"
   :visible.sync="dialogVisible"
   width="30%"
   :before-close="handleClose">
-    <!-- tree
+    <!-- tree 属性
       data：提供数据
-      props：配置数据中显示的属性 -->
+      props：配置数据中显示的属性
+      node-key - 给每一个节点一个表示 ，一般绑定id
+      当要使用default-expanded-keys和default-checked-keys必须先设置node-key
+      default-checked-keys 设置默认选中的节点 -->
     <el-tree
     :data="treedata"
     :props="defaultProps"
     show-checkbox
     default-expand-all
+    node-key="id"
+    :default-checked-keys="checkedList"
     @node-click="handleNodeClick">
     </el-tree>
     <span slot="footer" class="dialog-footer">
@@ -107,15 +115,19 @@ export default {
       // 角色信息列表
       roleslist: [],
       loading: true,
+      loadingTree: true,
       // 对话框
       dialogVisible: false,
+      // loading: true,
       // tree配置，要显示的数据
       treedata: [],
       // 配置要展示 数据中的哪个属性
       defaultProps: {
         children: 'children',
         label: 'authName'
-      }
+      },
+      // 获取要选择的节点
+      checkedList: []
     };
   },
   created() {
@@ -158,14 +170,36 @@ export default {
     handleNodeClick() {
 
     },
-    // 点击分配权限按钮，加载所有的权限
-    async handleshowdialogVisible() {
-      this.dialogVisible = true;
+    // 打开对话框的时候执行,加载所有的权限
+    async handleOpenDialog() {
+      this.loadingTree = true;
       const { data: resdata } = await this.$http.get(`rights/tree`);
+      this.loadingTree = false;
       // 获取后端返回的数据
       const { data } = resdata;
       console.log(data);
       this.treedata = data;
+    },
+    // 点击按钮显示分配权限的对话框
+    async handleshowrightdialog(role) {
+      this.dialogVisible = true;
+      // 获取当前角色拥有的权限id
+      // 声明数组存放权限id(只存放第三级的就行)
+      const rightArr = [];
+      // for(var i = 0; i < role.children.length; i++) {
+      //   rightArr.push( role.children[i].id);
+      // }
+      // 遍历一级权限
+      role.children.forEach((item1) => {
+        // 遍历二级权限
+        item1.children.forEach((item2) => {
+          // 遍历三级权限
+          item2.children.forEach((item3) => {
+            rightArr.push(item3.id);
+          });
+        });
+      });
+      this.checkedList = rightArr;
     }
   }
 };
