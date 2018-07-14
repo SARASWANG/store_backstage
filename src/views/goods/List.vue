@@ -5,7 +5,8 @@
 
     <el-row class="row-add">
       <el-col :span="24">
-        <el-button type="success" plain>添加商品</el-button>
+        <!--  点击添加商品，跳转到添加的路由组件中 -->
+        <el-button type="success" plain @click="$router.push({name: 'addgoods'})">添加商品</el-button>
       </el-col>
     </el-row>
 
