@@ -12,6 +12,8 @@ import Rights from '@/views/rights/Rights';
 import Roles from '@/views/rights/Roles';
 // 6 引入商品分类组件
 import Category from '@/views/goods/Category';
+// 7 引入商品列表组件
+import GoodsList from '@/views/goods/List';
 Vue.use(Router);
 
 export default new Router({
@@ -52,6 +54,12 @@ export default new Router({
           name: 'category',
           path: '/categories',
           component: Category
+        },
+        // 商品列表组件
+        {
+          name: 'goodslist',
+          path: '/goods',
+          component: GoodsList
         }
       ]
     }
