@@ -36,12 +36,29 @@
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="商品图片">商品图片</el-tab-pane>
-      <el-tab-pane label="商品内容">商品内容</el-tab-pane>
+      <el-tab-pane label="商品内容">
+        <!-- bidirectional data binding（双向数据绑定） -->
+        <quill-editor
+          v-model="content"
+          ref="myQuillEditor"
+          :options="editorOption"
+          @blur="onEditorBlur($event)"
+          @focus="onEditorFocus($event)"
+          @ready="onEditorReady($event)"
+          class="quilleditor">
+
+        </quill-editor>
+      </el-tab-pane>
     </el-tabs>
     <!-- /标签页 -->
   </el-card>
 </template>
 <script>
+// 配置富文本编辑器
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
+import { quillEditor } from 'vue-quill-editor';
 export default {
   data() {
     return {
@@ -50,7 +67,8 @@ export default {
         goods_price: '',
         goods_weight: '',
         goods_number: '',
-        goods_cat: ''
+        goods_cat: '',
+        goods_introduce: ''
       }
     };
   },
@@ -59,11 +77,27 @@ export default {
   methods: {
     async handleAdd () {
       console.log(this.form);
+    },
+    onEditorBlur () {
+      console.log('onEditorBlur');
+    },
+    onEditorFocus () {
+      console.log('onEditorFocus');
+    },
+    onEditorReady () {
+      console.log('onEditorReady');
     }
+  },
+  // 配置富文本编辑器
+  components: {
+    quillEditor
   }
 };
 </script>
 
 <style>
-
+.quilleditor {
+  margin-top: 20px;
+  height: 100px;
+}
 </style>
