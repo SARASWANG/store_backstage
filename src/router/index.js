@@ -16,6 +16,8 @@ import Category from '@/views/goods/Category';
 import GoodsList from '@/views/goods/List';
 // 8 goods中的添加商品组件
 import AddGoods from '@/views/goods/AddGoods';
+// 9 引入数据表组件
+import Data from '@/views/data/Data';
 Vue.use(Router);
 
 export default new Router({
@@ -68,6 +70,12 @@ export default new Router({
           name: 'addgoods',
           path: '/goods/add',
           component: AddGoods
+        },
+        // 数据统计报表
+        {
+          name: 'data',
+          path: '/reports',
+          component: Data
         }
       ]
     }

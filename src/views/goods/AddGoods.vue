@@ -39,21 +39,30 @@
       <el-tab-pane label="商品内容">
         <!-- bidirectional data binding（双向数据绑定） -->
         <quill-editor
-          v-model="content"
+          v-model="form.goods_introduce"
           ref="myQuillEditor"
-          :options="editorOption"
           @blur="onEditorBlur($event)"
           @focus="onEditorFocus($event)"
           @ready="onEditorReady($event)"
           class="quilleditor">
-
         </quill-editor>
+      </el-tab-pane>
+      <!-- 省市区三联动组件练习 cascader -->
+      <el-tab-pane label="地图练习">
+        <el-cascader
+          size="large"
+          :options="options"
+          v-model="selectedOptions"
+          @change="handleChange">
+        </el-cascader>
       </el-tab-pane>
     </el-tabs>
     <!-- /标签页 -->
   </el-card>
 </template>
 <script>
+// 配置省市三联动
+import { regionData } from 'element-china-area-data';
 // 配置富文本编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
@@ -62,6 +71,8 @@ import { quillEditor } from 'vue-quill-editor';
 export default {
   data() {
     return {
+      options: regionData,
+      selectedOptions: [],
       form: {
         goods_name: '',
         goods_price: '',
@@ -86,6 +97,9 @@ export default {
     },
     onEditorReady () {
       console.log('onEditorReady');
+    },
+    handleChange (value) {
+      console.log(value);
     }
   },
   // 配置富文本编辑器
@@ -98,6 +112,7 @@ export default {
 <style>
 .quilleditor {
   margin-top: 20px;
-  height: 100px;
+  height: 400px!important;
+  border-bottom: 1px solid #000000;
 }
 </style>
